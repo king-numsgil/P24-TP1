@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System;
 
 using static System.Console;
 
@@ -28,9 +28,7 @@ namespace Bingo
 	public struct Case
 	{
 		public static Case Generate(byte colonne)
-		{
-			return new Case(colonne, GenerateurCase.Generate(colonne));
-		}
+			=> new Case(colonne, GenerateurCase.Generate(colonne));
 
 		public Case(byte colonne, uint numero)
 		{
@@ -39,9 +37,7 @@ namespace Bingo
 		}
 
 		public override string ToString()
-		{
-			return Colonne == 2 && Numero == 0 ? "X" : Numero.ToString();
-		}
+			=> Colonne == 2 && Numero == 0 ? "X" : Numero.ToString();
 
 		public readonly byte Colonne;
 		public readonly uint Numero;
