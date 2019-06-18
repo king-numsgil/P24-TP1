@@ -1,27 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Bingo
 {
 	public static class GenerateurCase
 	{
 		private static readonly Random R = new Random();
-		private static readonly bool[] Cache = new bool[75];
+		private static readonly Dictionary<uint, bool> Cache = new Dictionary<uint, bool>();
 		
-		private static uint Next(byte colonne) => (uint) (
-			colonne == 0 ? R.Next(1,  15) :
-			colonne == 1 ? R.Next(16, 30) :
-			colonne == 2 ? R.Next(31, 45) :
-			colonne == 3 ? R.Next(46, 60) :
-			R.Next(61, 75));
+		private static uint Next(byte colonne) => (uint) (R.Next(15) + 1 + colonne * 15);
 
-		public static void Reset() => Array.Fill(Cache, false);
+		public static void Reset() => Cache.Clear();
 
 		public static uint Generate(byte colonne)
 		{
 			uint numero;
 			do numero = Next(colonne);
-			while (Cache[numero - 1]);
+			while (Cache.ContainsKey(numero));
 
+			Cache[numero] = true;
 			return numero;
 		}
 	}
@@ -80,7 +77,8 @@ namespace Bingo
 			for (byte i = 0; i < 5; ++i)
 			{
 				Console.SetCursorPosition(left, top + 3 + i);
-				Console.Write("║{0,2}║{1,2}║{2,2}║{3,2}║{4,2}║", this[i, 0], this[i, 1], this[i, 2], this[i, 3], this[i, 4]);
+				Console.Write("║{0,2}║{1,2}║{2,2}║{3,2}║{4,2}║",
+					this[i, 0], this[i, 1], this[i, 2], this[i, 3], this[i, 4]);
 			}
 			
 			Console.SetCursorPosition(left, top + 8);
@@ -128,7 +126,8 @@ namespace Bingo
 			for (int i = 0; i < cartes.Length; ++i)
 			{
 				int ligne = i / ligneCompte;
-				cartes[i].Print(leftOffset + (i - ligne * ligneCompte) * cardWidth, topOffset + ligne * cardHeight);
+				cartes[i].Print(leftOffset + (i - ligne * ligneCompte) * cardWidth,
+					topOffset + ligne * cardHeight);
 			}
 
 			Console.ReadLine();
