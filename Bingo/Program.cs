@@ -2,16 +2,35 @@
 
 namespace Bingo
 {
-	struct Case
+	public static class GenerateurCase
+	{
+		private static readonly Random R = new Random();
+		private static readonly bool[] Cache = new bool[75];
+		
+		private static uint Next(byte colonne) => (uint) (
+			colonne == 0 ? R.Next(1,  15) :
+			colonne == 1 ? R.Next(16, 30) :
+			colonne == 2 ? R.Next(31, 45) :
+			colonne == 3 ? R.Next(46, 60) :
+			R.Next(61, 75));
+
+		public static void Reset() => Array.Fill(Cache, false);
+
+		public static uint Generate(byte colonne)
+		{
+			uint numero;
+			do numero = Next(colonne);
+			while (Cache[numero - 1]);
+
+			return numero;
+		}
+	}
+	
+	public struct Case
 	{
 		public static Case Generate(byte colonne)
 		{
-			return new Case(colonne, (uint) (
-				colonne == 0 ? R.Next(1,  15) :
-				colonne == 1 ? R.Next(16, 30) :
-				colonne == 2 ? R.Next(31, 45) :
-				colonne == 3 ? R.Next(46, 60) :
-				R.Next(61, 75)));
+			return new Case(colonne, GenerateurCase.Generate(colonne));
 		}
 
 		public Case(byte colonne, uint numero)
@@ -27,20 +46,19 @@ namespace Bingo
 
 		public readonly byte Colonne;
 		public readonly uint Numero;
-		
-		private static readonly Random R = new Random();
 	}
 
-	class Carte
+	public class Carte
 	{
-		public Case this[byte colonne, int ligne] => Cases[colonne, ligne];
+		public Case this[byte colonne, byte ligne] => Cases[colonne, ligne];
 
 		public readonly Case[,] Cases = new Case[5, 5];
 
 		public Carte()
 		{
+			GenerateurCase.Reset();
 			for (byte i = 0; i < 5; ++i)
-				for (int j = 0; j < 5; ++j)
+				for (byte j = 0; j < 5; ++j)
 					Cases[j, i] = Case.Generate(i);
 
 			Cases[2, 2] = new Case(2, 0);
@@ -70,7 +88,7 @@ namespace Bingo
 		}
 	}
 
-	static class Program
+	internal static class Program
 	{
 		public static void Main()
 		{
@@ -104,10 +122,13 @@ namespace Bingo
 				new Carte()
 			};
 
+			const int ligneCompte = 5;
+			const int leftOffset = 4, topOffset = 1;
+			const int cardWidth = 16 + 1, cardHeight = 8 + 1;
 			for (int i = 0; i < cartes.Length; ++i)
 			{
-				int ligne = i / 5;
-				cartes[i].Print(4 + (i - ligne * 5) * 17, 1 + ligne * 9);
+				int ligne = i / ligneCompte;
+				cartes[i].Print(leftOffset + (i - ligne * ligneCompte) * cardWidth, topOffset + ligne * cardHeight);
 			}
 
 			Console.ReadLine();
