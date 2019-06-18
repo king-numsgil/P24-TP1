@@ -16,7 +16,7 @@ namespace Bingo
 		public static Case Generate(Colonne colonne)
 		{
 			return new Case(colonne, (uint) (
-				colonne == Colonne.B ? R.Next(1, 15) :
+				colonne == Colonne.B ? R.Next(1,  15) :
 				colonne == Colonne.I ? R.Next(16, 30) :
 				colonne == Colonne.N ? R.Next(31, 45) :
 				colonne == Colonne.G ? R.Next(46, 60) :
@@ -52,15 +52,26 @@ namespace Bingo
 
 		public void Print(int left, int top)
 		{
+			// alt + 201 ╔ alt + 205 ═ alt + 203 ╦ alt + 187 ╗
+			// alt + 186 ║ alt + 204 ╠ alt + 206 ╬ alt + 202 ╩
+			// alt + 185 ╣ alt + 200 ╚ alt + 188 ╝
+			
 			Console.SetCursorPosition(left, top);
-			Console.Write(" B  I  N  G  O");
+			Console.Write("╔══╦══╦══╦══╦══╗");
+			Console.SetCursorPosition(left, top + 1);
+			Console.Write("║B ║I ║N ║G ║O ║");
+			Console.SetCursorPosition(left, top + 2);
+			Console.Write("╠══╬══╬══╬══╬══╣");
 
 			for (int i = 0; i < 5; ++i)
 			{
 				Colonne c = (Colonne) i;
-				Console.SetCursorPosition(left, top + 1 + i);
-				Console.Write("{0,2} {1,2} {2,2} {3,2} {4,2}", this[c, 0], this[c, 1], this[c, 2], this[c, 3], this[c, 4]);
+				Console.SetCursorPosition(left, top + 3 + i);
+				Console.Write("║{0,2}║{1,2}║{2,2}║{3,2}║{4,2}║", this[c, 0], this[c, 1], this[c, 2], this[c, 3], this[c, 4]);
 			}
+			
+			Console.SetCursorPosition(left, top + 8);
+			Console.Write("╚══╩══╩══╩══╩══╝");
 		}
 	}
 
@@ -99,7 +110,10 @@ namespace Bingo
 			};
 
 			for (int i = 0; i < cartes.Length; ++i)
-				cartes[i].Print(4 + (i - i / 5 * 5) * 16, 7 * (i / 5) + 1);
+			{
+				int ligne = i / 5;
+				cartes[i].Print(4 + (i - ligne * 5) * 17, 1 + ligne * 9);
+			}
 
 			Console.ReadLine();
 		}
