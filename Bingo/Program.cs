@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using static System.Console;
+
 namespace Bingo
 {
 	public static class GenerateurCase
@@ -67,22 +69,22 @@ namespace Bingo
 			// alt + 186 ║ alt + 204 ╠ alt + 206 ╬ alt + 202 ╩
 			// alt + 185 ╣ alt + 200 ╚ alt + 188 ╝
 			
-			Console.SetCursorPosition(left, top);
-			Console.Write("╔══╦══╦══╦══╦══╗");
-			Console.SetCursorPosition(left, top + 1);
-			Console.Write("║ B║ I║ N║ G║ O║");
-			Console.SetCursorPosition(left, top + 2);
-			Console.Write("╠══╬══╬══╬══╬══╣");
+			SetCursorPosition(left, top);
+			Write("╔══╦══╦══╦══╦══╗");
+			SetCursorPosition(left, top + 1);
+			Write("║ B║ I║ N║ G║ O║");
+			SetCursorPosition(left, top + 2);
+			Write("╠══╬══╬══╬══╬══╣");
 
 			for (byte i = 0; i < 5; ++i)
 			{
-				Console.SetCursorPosition(left, top + 3 + i);
-				Console.Write("║{0,2}║{1,2}║{2,2}║{3,2}║{4,2}║",
+				SetCursorPosition(left, top + 3 + i);
+				Write("║{0,2}║{1,2}║{2,2}║{3,2}║{4,2}║",
 					this[i, 0], this[i, 1], this[i, 2], this[i, 3], this[i, 4]);
 			}
 			
-			Console.SetCursorPosition(left, top + 8);
-			Console.Write("╚══╩══╩══╩══╩══╝");
+			SetCursorPosition(left, top + 8);
+			Write("╚══╩══╩══╩══╩══╝");
 		}
 	}
 
@@ -90,7 +92,7 @@ namespace Bingo
 	{
 		public static void Main()
 		{
-			Console.SetWindowSize(200, 40);
+			SetWindowSize(200, 40);
 
 			Carte[] cartes = {
 				new Carte(),
@@ -130,7 +132,7 @@ namespace Bingo
 					topOffset + ligne * cardHeight);
 			}
 
-			Console.ReadLine();
+			ReadLine();
 		}
 	}
 }
