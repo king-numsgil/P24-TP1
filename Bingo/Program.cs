@@ -110,11 +110,6 @@ namespace Bingo
 				new Carte(),
 				new Carte(),
 				new Carte(),
-				new Carte(),
-				new Carte(),
-				new Carte(),
-				new Carte(),
-				new Carte(),
 				new Carte()
 			};
 
