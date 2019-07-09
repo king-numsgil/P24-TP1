@@ -36,6 +36,7 @@ namespace Bingo
 		{
 			Colonne = colonne;
 			Numero = numero;
+			Sortie = false;
 		}
 
 		public override string ToString()
@@ -43,6 +44,7 @@ namespace Bingo
 
 		public readonly byte Colonne;
 		public readonly uint Numero;
+		public bool Sortie;
 	}
 
 	public class Carte
@@ -58,7 +60,7 @@ namespace Bingo
 				for (byte j = 0; j < 5; ++j)
 					Cases[j, i] = Case.Generate(i);
 
-			Cases[2, 2] = new Case(2, 0);
+			Cases[2, 2] = new Case(2, 0) {Sortie = true};
 		}
 
 		public void Print(int left, int top)
@@ -77,8 +79,15 @@ namespace Bingo
 			for (byte i = 0; i < 5; ++i)
 			{
 				SetCursorPosition(left, top + 3 + i);
-				Write("║{0,2}║{1,2}║{2,2}║{3,2}║{4,2}║",
-					this[i, 0], this[i, 1], this[i, 2], this[i, 3], this[i, 4]);
+				Write("║");
+
+				for (byte j = 0; j < 5; ++j)
+				{
+					ForegroundColor = this[i, j].Sortie ? ConsoleColor.Green : ConsoleColor.Red;
+					Write("{0,2}", this[i, j]);
+					ForegroundColor = ConsoleColor.White;
+					Write("║");
+				}
 			}
 			
 			SetCursorPosition(left, top + 8);
@@ -104,9 +113,9 @@ namespace Bingo
 			for (int i = 0; i < joueurs; ++i)
 				cartes[i] = new Carte();
 			
-			/*int nWinner = 0;
+			int nWinner = 0;
 			while (nWinner == 0)
-			{*/
+			{
 				Clear();
 				DisplayBoulles();
 				
@@ -120,8 +129,24 @@ namespace Bingo
 						topOffset + ligne * cardHeight);
 				}
 
-				/*Thread.Sleep(500);
-			}*/
+				Thread.Sleep(800);
+
+				uint numero;
+				do numero = (uint) R.Next(75) + 1;
+				while (cache.ContainsKey(numero));
+				cache[numero] = true;
+
+				if (boulles.ContainsKey(numero)) boulles[numero]++;
+				else boulles[numero] = 1;
+				
+				SetCursorPosition(145, 15);
+				Write("Une boulle à été tiré! Numéro {0}", numero);
+				DisplayBoulles();
+
+				Thread.Sleep(800);
+
+				nWinner = UpdateCartes(cartes, cache);
+			}
 		});
 
 		public static void DisplayBoulles()
@@ -144,8 +169,15 @@ namespace Bingo
 			}
 		}
 
-		public static int NumWinner(Carte[] cartes)
+		public static int UpdateCartes(IEnumerable<Carte> cartes, Dictionary<uint, bool> cache)
 		{
+			foreach (Carte carte in cartes)
+			{
+				for (byte i = 0; i < 5; ++i)
+					for (byte j = 0; j < 5; ++j)
+						if (!carte[i, j].Sortie && cache.ContainsKey(carte[i, j].Numero))
+							carte.Cases[i, j].Sortie = true;
+			}
 			return 0;
 		}
 	}
