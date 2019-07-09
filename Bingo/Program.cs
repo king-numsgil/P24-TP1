@@ -53,6 +53,27 @@ namespace Bingo
 
 		public readonly Case[,] Cases = new Case[5, 5];
 
+		public bool IsWin
+		{
+			get
+			{
+				for (byte i = 0; i < 5; ++i)
+				{
+					if (this[i, 0].Sortie && this[i, 1].Sortie && this[i, 2].Sortie && this[i, 3].Sortie && this[i, 4].Sortie)
+						return true;
+					if (this[0, i].Sortie && this[1, i].Sortie && this[2, i].Sortie && this[3, i].Sortie && this[4, i].Sortie)
+						return true;
+				}
+
+				if (this[0, 0].Sortie && this[1, 1].Sortie && this[2, 2].Sortie && this[3, 3].Sortie && this[4, 4].Sortie)
+					return true;
+				if (this[0, 4].Sortie && this[1, 3].Sortie && this[2, 2].Sortie && this[3, 2].Sortie && this[4, 1].Sortie)
+					return true;
+
+				return false;
+			}
+		}
+
 		public Carte()
 		{
 			GenerateurCase.Reset();
@@ -68,6 +89,8 @@ namespace Bingo
 			// alt + 201 ╔ alt + 205 ═ alt + 203 ╦ alt + 187 ╗
 			// alt + 186 ║ alt + 204 ╠ alt + 206 ╬ alt + 202 ╩
 			// alt + 185 ╣ alt + 200 ╚ alt + 188 ╝
+
+			BackgroundColor = IsWin ? ConsoleColor.Gray : ConsoleColor.Black;
 			
 			SetCursorPosition(left, top);
 			Write("╔══╦══╦══╦══╦══╗");
@@ -118,18 +141,9 @@ namespace Bingo
 			{
 				Clear();
 				DisplayBoulles();
-				
-				const int ligneCompte = 5;
-				const int leftOffset = 4, topOffset = 1;
-				const int cardWidth = 16 + 1, cardHeight = 8 + 1;
-				for (int i = 0; i < cartes.Length; ++i)
-				{
-					int ligne = i / ligneCompte;
-					cartes[i].Print(leftOffset + (i - ligne * ligneCompte) * cardWidth,
-						topOffset + ligne * cardHeight);
-				}
+				DisplayCartes(cartes);
 
-				Thread.Sleep(800);
+				Thread.Sleep(600);
 
 				uint numero;
 				do numero = (uint) R.Next(75) + 1;
@@ -143,11 +157,31 @@ namespace Bingo
 				Write("Une boulle à été tiré! Numéro {0}", numero);
 				DisplayBoulles();
 
-				Thread.Sleep(800);
+				Thread.Sleep(600);
 
 				nWinner = UpdateCartes(cartes, cache);
 			}
+			
+			Clear();
+			DisplayBoulles();
+			DisplayCartes(cartes);
+			
+			SetCursorPosition(145, 15);
+			Write("Nous avons {0} gagnant{1}!", nWinner, nWinner > 1 ? "s" : "");
 		});
+
+		public static void DisplayCartes(Carte[] cartes)
+		{
+			const int ligneCompte = 5;
+			const int leftOffset = 4, topOffset = 1;
+			const int cardWidth = 16 + 1, cardHeight = 8 + 1;
+			for (int i = 0; i < cartes.Length; ++i)
+			{
+				int ligne = i / ligneCompte;
+				cartes[i].Print(leftOffset + (i - ligne * ligneCompte) * cardWidth,
+					topOffset + ligne * cardHeight);
+			}
+		}
 
 		public static void DisplayBoulles()
 		{
@@ -171,14 +205,18 @@ namespace Bingo
 
 		public static int UpdateCartes(IEnumerable<Carte> cartes, Dictionary<uint, bool> cache)
 		{
+			int nWin = 0;
 			foreach (Carte carte in cartes)
 			{
 				for (byte i = 0; i < 5; ++i)
 					for (byte j = 0; j < 5; ++j)
 						if (!carte[i, j].Sortie && cache.ContainsKey(carte[i, j].Numero))
 							carte.Cases[i, j].Sortie = true;
+
+				if (carte.IsWin) ++nWin;
 			}
-			return 0;
+
+			return nWin;
 		}
 	}
 }
