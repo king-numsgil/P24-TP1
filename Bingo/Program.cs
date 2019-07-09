@@ -59,15 +59,31 @@ namespace Bingo
 			{
 				for (byte i = 0; i < 5; ++i)
 				{
-					if (this[i, 0].Sortie && this[i, 1].Sortie && this[i, 2].Sortie && this[i, 3].Sortie && this[i, 4].Sortie)
+					if (this[i, 0].Sortie &&
+					    this[i, 1].Sortie &&
+					    this[i, 2].Sortie &&
+					    this[i, 3].Sortie &&
+					    this[i, 4].Sortie)
 						return true;
-					if (this[0, i].Sortie && this[1, i].Sortie && this[2, i].Sortie && this[3, i].Sortie && this[4, i].Sortie)
+					if (this[0, i].Sortie &&
+					    this[1, i].Sortie &&
+					    this[2, i].Sortie &&
+					    this[3, i].Sortie &&
+					    this[4, i].Sortie)
 						return true;
 				}
 
-				if (this[0, 0].Sortie && this[1, 1].Sortie && this[2, 2].Sortie && this[3, 3].Sortie && this[4, 4].Sortie)
+				if (this[0, 0].Sortie &&
+				    this[1, 1].Sortie &&
+				    this[2, 2].Sortie &&
+				    this[3, 3].Sortie &&
+				    this[4, 4].Sortie)
 					return true;
-				if (this[0, 4].Sortie && this[1, 3].Sortie && this[2, 2].Sortie && this[3, 2].Sortie && this[4, 1].Sortie)
+				if (this[0, 4].Sortie &&
+				    this[1, 3].Sortie &&
+				    this[2, 2].Sortie &&
+				    this[3, 2].Sortie &&
+				    this[4, 1].Sortie)
 					return true;
 
 				return false;
