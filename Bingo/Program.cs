@@ -2,6 +2,7 @@
 using System;
 
 using static System.Console;
+using static Bingo.ConsoleExt;
 
 namespace Bingo
 {
@@ -86,10 +87,8 @@ namespace Bingo
 
 	internal static class Program
 	{
-		public static void Main()
+		public static void Main() => Run(() =>
 		{
-			SetWindowSize(200, 40);
-
 			Carte[] cartes = {
 				new Carte(),
 				new Carte(),
@@ -122,8 +121,6 @@ namespace Bingo
 				cartes[i].Print(leftOffset + (i - ligne * ligneCompte) * cardWidth,
 					topOffset + ligne * cardHeight);
 			}
-
-			ReadLine();
-		}
+		});
 	}
 }
