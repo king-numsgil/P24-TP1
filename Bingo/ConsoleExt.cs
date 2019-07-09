@@ -45,7 +45,7 @@ namespace Bingo
 			ClearRect(left, top - 1, 60, 3);
 		}
 		
-		public static void ReadU32(int left, int top, string question, out uint result)
+		public static void ReadU32(int left, int top, string question, out uint result, uint min = 0, uint max = 300)
 		{
 			string tmp = string.Empty;
 			do
@@ -63,35 +63,11 @@ namespace Bingo
 				Console.SetCursorPosition(left, top);
 				Console.Write(question + " : ");
 				tmp = Console.ReadLine()?.Trim();
-			} while (!uint.TryParse(tmp, out result));
+			} while (!uint.TryParse(tmp, out result) || result < min || result > max);
 
 			ClearRect(left, top - 1, 60, 3);
 		}
-		
-		public static void ReadU32(int left, int top, string question, out uint result, uint lowBound, uint highBound)
-		{
-			string tmp = string.Empty;
-			result = lowBound;
-			do
-			{
-				if (tmp != string.Empty || result > highBound || result < lowBound)
-				{
-					Console.SetCursorPosition(left + 2, top - 1);
-					Console.ForegroundColor = ConsoleColor.Red;
-					Console.Write("Entrée Invalide!");
-				}
 
-				Console.ForegroundColor = ConsoleColor.White;
-				Console.BackgroundColor = ConsoleColor.Black;
-				ClearRect(left, top, 60, 1);
-				Console.SetCursorPosition(left, top);
-				Console.Write(question + " : ");
-				tmp = Console.ReadLine()?.Trim();
-			} while (!uint.TryParse(tmp, out result) || result > highBound || result < lowBound);
-
-			ClearRect(left, top - 1, 60, 3);
-		}
-		
 		public static void ReadChar(int left, int top, string question, out char result, params char[] candidats)
 		{
 			string tmp = string.Empty;
